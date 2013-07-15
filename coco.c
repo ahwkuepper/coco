@@ -5,7 +5,7 @@
 
 #define Pi 3.14159265
 #define PI 3.14159265
-#define G  0.0043           //gravitational constant in [km^2/s^2/Msun*pc]
+#define G  0.0043009211           //gravitational constant in [km^2/s^2/Msun*pc]
 #define max( a, b ) ( ((a) > (b)) ? (a) : (b) )
 #define min( a, b ) ( ((a) < (b)) ? (a) : (b) )
 
