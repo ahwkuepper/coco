@@ -1,0 +1,7 @@
+*.o
+*~
+coco
+.DS_Store
+#*
+*.tar
+*.gz
