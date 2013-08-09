@@ -10,7 +10,7 @@
 #define min( a, b ) ( ((a) < (b)) ? (a) : (b) )
 
 
-void convert(double *x, double *v, double *dsun, double *vrsun, double *vr, double *l, double *b, double *lcosb, double *RA, double *DEC, double *mu_alpha, double *mu_alphacosdelta, double *mu_delta, double *mutemp, double *PAtemp, int coordtype, int vcoordtype, double vLSRtemp);
+void convert(double *x, double *v, double *dsun, double *vrsun, double *vr, double *l, double *b, double *lcosb, double *RA, double *DEC, double *mu_alpha, double *mu_alphacosdelta, double *mu_delta, double *mutemp, double *PAtemp, double *mu_ltemp, double *mu_btemp, double *mu_lcosbtemp, int coordtype, int vcoordtype, double vLSRtemp);
 
 
 //Galactic North Pole parameters
@@ -52,22 +52,25 @@ int main (int argc, const char * argv[]) {
 
 	double x[3] = {0.0, 0.0, 0.0};  //galactocentric cartesian coordinates [pc]
 	double v[3] = {0.0, 0.0, 0.0};	//galactocentric cartesian rest-frame velocity [km/s]
-	double dsun = 102800.0;//30000;	//distance from the sun [pc]
-	double vrsun = 0.00;  //heliocentric radial velocity [km/s]
+	double dsun = 23187.2;//30000;	//distance from the sun [pc]
+	double vrsun = -58.7;  //heliocentric radial velocity [km/s]
 	double vr = 0.0; //radial velocity in LSR frame corrected for solar motion [km/s]
-	double l = 202.310584;//152.45;	//galactic longitude [deg]
-	double b = 71.802614;//37.44; //galactic lattitude [deg]
+	double l = 0.852;//152.45;	//galactic longitude [deg]
+	double b = 45.860;//37.44; //galactic lattitude [deg]
 	double lcosb = 0.0; //galactic longitude corrected for lattitude factor [deg]
 	double RA = 0.0;	//right ascension [deg]
 	double DEC = 0.0;	//declination [deg]
 	double mu_alpha = 0.0; //proper motion in RA direction [mas/yr]
-	double mu_alphacosdelta = 0.008; //proper motion in RA direction corrected for declination factor [mas/yr]
-	double mu_delta = -1.53; //proper motion in DEC direction [mas/yr]
+	double mu_alphacosdelta = -2.5372; //proper motion in RA direction corrected for declination factor [mas/yr]
+	double mu_delta = -2.6493; //proper motion in DEC direction [mas/yr]
 	double mu = 0.0; //transverse motion [mas/yr]
 	double PA = 0.0;//223.667780; //Position angle of transverse motion [deg]
+	double mu_l = 0.0; //proper motion in l direction [mas/yr]
+	double mu_lcosb = 0.0; //proper motion in l direction corrected for lattitude factor [mas/yr]
+	double mu_b = 0.0; //proper motion in b direction [mas/yr]
 
 	int coordtype = 2; //(1 = equatorial to galactic and cartesian, 2 = galactic to equatorial and cartesian, 3 = cartesian to equatorial and galactic)
-	int vcoordtype = 3; //(1 = mu & position angle; 2 = mu_alpha & mu_delta or mu_alphacos(delta) & mu_delta; 3 = cartesian velocities) 
+	int vcoordtype = 2; //(1 = mu & position angle; 2 = mu_alpha & mu_delta or mu_alphacos(delta) & mu_delta; 3 = cartesian velocities)
 	
 	printf("\nINPUT:\n");	
 	printf("X = %f\t Y = %f\t Z = %f [pc]\t Rgal = %f\n", x[0],x[1],x[2], sqrt(x[0]*x[0]+x[1]*x[1]+x[2]*x[2]));
@@ -75,9 +78,9 @@ int main (int argc, const char * argv[]) {
     printf("dsun = %f [pc]\t vrsun = %f\t vr = %f [km/s]\n", dsun,vrsun,vr);
     printf("l = %f\t b = %f\t lcos(b) = %f [deg]\n", l,b,lcosb);
     printf("RA = %f\t DEC = %f [deg]\n", RA,DEC);
-    printf("mu_alpha = %f\t mu_alphacos(delta) = %f\t mu_delta = %f\t mu = %f [mas/yr]\t PA = %f [deg]\n", mu_alpha,mu_alphacosdelta,mu_delta,mu,PA);
+    printf("mu_alpha = %f\t mu_alphacos(delta) = %f\t mu_delta = %f\t mu = %f [mas/yr]\t PA = %f [deg]\tmu_l = %f\t mu_lcos(b) = %f\t mu_b = %f\n", mu_alpha,mu_alphacosdelta,mu_delta,mu,PA, mu_l,mu_lcosb,mu_b);
 
-	convert(x, v, &dsun, &vrsun, &vr, &l, &b, &lcosb, &RA, &DEC, &mu_alpha, &mu_alphacosdelta, &mu_delta, &mu, &PA, coordtype, vcoordtype, vLSR);
+	convert(x, v, &dsun, &vrsun, &vr, &l, &b, &lcosb, &RA, &DEC, &mu_alpha, &mu_alphacosdelta, &mu_delta, &mu, &PA, &mu_l, &mu_b, &mu_lcosb, coordtype, vcoordtype, vLSR);
 	
 	printf("\nOUTPUT:\n");	
 	printf("X = %f\t Y = %f\t Z = %f [pc]\t Rgal = %f\n", x[0],x[1],x[2], sqrt(x[0]*x[0]+x[1]*x[1]+x[2]*x[2]));
@@ -85,14 +88,14 @@ int main (int argc, const char * argv[]) {
     printf("dsun = %f [pc]\t vrsun = %f\t vr = %f [km/s]\n", dsun,vrsun,vr);
     printf("l = %f\t b = %f\t lcos(b) = %f [deg]\n", l,b,lcosb);
     printf("RA = %f\t DEC = %f [deg]\n", RA,DEC);
-    printf("mu_alpha = %f\t mu_alphacos(delta) = %f\t mu_delta = %f\t mu = %f [mas/yr]\t PA = %f [deg]\n\n", mu_alpha,mu_alphacosdelta,mu_delta,mu,PA);
+    printf("mu_alpha = %f\t mu_alphacos(delta) = %f\t mu_delta = %f\t mu = %f [mas/yr]\t PA = %f [deg]\tmu_l = %f\t mu_lcos(b) = %f\t mu_b = %f\n", mu_alpha,mu_alphacosdelta,mu_delta,mu,PA, mu_l,mu_lcosb,mu_b);
 	
 	
     return 0;
 }
 
 
-void convert(double *xtemp, double *vtemp, double *dsuntemp, double *vrsuntemp, double *vrtemp, double *ltemp, double *btemp, double *lcosbtemp, double *RAtemp, double *DECtemp, double *mu_alphatemp, double *mu_alphacosdeltatemp, double *mu_deltatemp, double *mutemp, double *PAtemp, int coordtype, int vcoordtype, double vLSRtemp){
+void convert(double *xtemp, double *vtemp, double *dsuntemp, double *vrsuntemp, double *vrtemp, double *ltemp, double *btemp, double *lcosbtemp, double *RAtemp, double *DECtemp, double *mu_alphatemp, double *mu_alphacosdeltatemp, double *mu_deltatemp, double *mutemp, double *PAtemp, double *mu_ltemp, double *mu_btemp, double *mu_lcosbtemp, int coordtype, int vcoordtype, double vLSRtemp){
 	
 	double x,y,z;        //galactic coordinates [kpc]
 	double xsun = -rgalsun/1000.0;//galactocentric distance of sun [kpc]
@@ -107,8 +110,8 @@ void convert(double *xtemp, double *vtemp, double *dsuntemp, double *vrsuntemp, 
 	double detT;
 	double RArad, DECrad;
 	double brad, lrad, lcosbrad;
-	double mu_alphacosdelta, mu_delta, mu, PArad;
-	double vr, vrsun;
+    double mu_alphacosdelta, mu_delta, mu, PArad, mu_l, mu_b, mu_lcosb;
+    double vr, vrsun;
 	double RAENP = 0.0, DECENP = PI/2.0;  //equatorial coordinates of equatorial north pole
 	double xENP, yENP, zENP, dxyENP; //cartesian vector pointing to the equatorial north pole  
 	double bENP, lENP; //galactic coordinates of ENP
@@ -116,7 +119,7 @@ void convert(double *xtemp, double *vtemp, double *dsuntemp, double *vrsuntemp, 
 	double xdelta, ydelta, zdelta;
 	double nx, ny, nz, dvt;
 	double vrLSR, vrGSR;
-
+	double C1, C2;
 	
 	//transformation matrix equ. -> gal. from Johnson & Soderblom (1987)
 	t = PAGNP/360.0*2.0*PI;
@@ -327,6 +330,14 @@ void convert(double *xtemp, double *vtemp, double *dsuntemp, double *vrsuntemp, 
 		if (radio) printf("vx = %.3f\tvy = %.3f\tvz = %.3f\tv = %.3f [km/s]\n",vx,vy,vz, sqrt(vx*vx+vy*vy+vz*vz));
 		if (radio) printf("vx = %.3f\tvy = %.3f\tvz = %.3f\tv = %.3f [km/s] (heliocentric)\n",vx-vxsun,vy-vysun-vLSRtemp,vz-vzsun, sqrt(pow(vx-vxsun,2)+pow(vy-vysun-vLSRtemp,2)+pow(vz-vzsun,2)));
 		
+        
+        //get proper motion in galactic coordinates (Poleski 2013)
+        C1 = sin(d)*cos(DECrad)-cos(d)*sin(DECrad)*cos(RArad-a);
+        C2 = cos(d)*sin(RArad-a);
+        mu_lcosb = (C1*mu_alphacosdelta+C2*mu_delta)/cos(brad);
+        mu_b = (-C2*mu_alphacosdelta+C1*mu_delta)/cos(brad);
+
+        
 	} else if (vcoordtype == 2) {
 
 		//get radial velocity in 3d coordinates [km/s]
@@ -414,7 +425,15 @@ void convert(double *xtemp, double *vtemp, double *dsuntemp, double *vrsuntemp, 
 		
 		if (radio) printf("\nProper motion and position angle:\n");
 		if (radio) printf("mu = %f\tPA = %f\n", mu, PArad);
+
 		
+        //get proper motion in galactic coordinates (Poleski 2013)
+        C1 = sin(d)*cos(DECrad)-cos(d)*sin(DECrad)*cos(RArad-a);
+        C2 = cos(d)*sin(RArad-a);
+        mu_lcosb = (C1*mu_alphacosdelta+C2*mu_delta)/cos(brad);
+        mu_b = (-C2*mu_alphacosdelta+C1*mu_delta)/cos(brad);
+
+        
 	} else if (vcoordtype == 3) {
 
 		if (radio) printf("\nCartesian velocity:\n");
@@ -465,6 +484,13 @@ void convert(double *xtemp, double *vtemp, double *dsuntemp, double *vrsuntemp, 
 		mu_delta = mu*cos(PArad);
 		mu_alphacosdelta = mu*sin(PArad);
 		
+        
+        //get proper motion in galactic coordinates (Poleski 2013)
+        C1 = sin(d)*cos(DECrad)-cos(d)*sin(DECrad)*cos(RArad-a);
+        C2 = cos(d)*sin(RArad-a);
+        mu_lcosb = (C1*mu_alphacosdelta+C2*mu_delta)/cos(brad);
+        mu_b = (-C2*mu_alphacosdelta+C1*mu_delta)/cos(brad);
+
 	}
 	
 	
@@ -509,5 +535,10 @@ void convert(double *xtemp, double *vtemp, double *dsuntemp, double *vrsuntemp, 
 	*mu_deltatemp = mu_delta/(dsun*4.74057);
 	*mu_alphacosdeltatemp = mu_alphacosdelta/(dsun*4.74057);
 	*mu_alphatemp = *mu_alphacosdeltatemp/cos(DECrad);
+    
+    *mu_btemp = mu_b/(dsun*4.74057);
+    *mu_lcosbtemp = mu_lcosb/(dsun*4.74057);
+    *mu_ltemp = *mu_lcosbtemp/cos(brad);
+
 	
 }
