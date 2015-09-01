@@ -1,3 +1,25 @@
+/***************************************************************************
+ *   Copyright (C) 2015 by Andreas H.W. Kuepper                            *
+ *   ahwkuepper@gmail.com                                                  *
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ *   This program is distributed in the hope that it will be useful,       *
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of        *
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
+ *   GNU General Public License for more details.                          *
+ *                                                                         *
+ *   You should have received a copy of the GNU General Public License     *
+ *   along with this program; if not, write to the                         *
+ *   Free Software Foundation, Inc.,                                       *
+ *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
+ ***************************************************************************/
+/***************************************************************************
+ *   Compile using the command: cc -o coco coco.c -lm                      *
+ ***************************************************************************/
 #include<stdio.h>
 #include<stdlib.h>
 #include<math.h>
@@ -52,19 +74,19 @@ int main (int argc, const char * argv[]) {
 
 	double x[3] = {0.0, 0.0, 0.0};  //galactocentric cartesian coordinates [pc]
 	double v[3] = {0.0, 0.0, 0.0};	//galactocentric cartesian rest-frame velocity [km/s]
-	double dsun = 23187.2;//30000;	//distance from the sun [pc]
-	double vrsun = -58.7;  //heliocentric radial velocity [km/s]
+	double dsun = 6000.0;//8330.0;//102800.0;//23500.0;//23426.700;//30000;	//distance from the sun [pc]
+	double vrsun = 232.0;//72.3;//-58.7;  //heliocentric radial velocity [km/s]
 	double vr = 0.0; //radial velocity in LSR frame corrected for solar motion [km/s]
-	double l = 0.852;//152.45;	//galactic longitude [deg]
-	double b = 45.860;//37.44; //galactic lattitude [deg]
+	double l = 309.0;//181.0;//28.74;//202.31;//Pal4 0.852;//152.45;	//galactic longitude [deg]
+	double b = 15.0;//-45.0;//42.19;//71.80;//Pal4 45.860;//37.44; //galactic lattitude [deg]
 	double lcosb = 0.0; //galactic longitude corrected for lattitude factor [deg]
 	double RA = 0.0;	//right ascension [deg]
 	double DEC = 0.0;	//declination [deg]
 	double mu_alpha = 0.0; //proper motion in RA direction [mas/yr]
-	double mu_alphacosdelta = -2.5372; //proper motion in RA direction corrected for declination factor [mas/yr]
-	double mu_delta = -2.6493; //proper motion in DEC direction [mas/yr]
-	double mu = 0.0; //transverse motion [mas/yr]
-	double PA = 0.0;//223.667780; //Position angle of transverse motion [deg]
+	double mu_alphacosdelta = -5.1;//-2.259280; //-2.414470; //proper motion in RA direction corrected for declination factor [mas/yr]
+	double mu_delta = -3.6;//-2.229050;//-2.391090; //proper motion in DEC direction [mas/yr]
+	double mu = 0.51; //transverse motion [mas/yr]
+	double PA = 205.1;//223.667780; //Position angle of transverse motion [deg]
 	double mu_l = 0.0; //proper motion in l direction [mas/yr]
 	double mu_lcosb = 0.0; //proper motion in l direction corrected for lattitude factor [mas/yr]
 	double mu_b = 0.0; //proper motion in b direction [mas/yr]
