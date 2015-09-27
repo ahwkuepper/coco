@@ -18,62 +18,25 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 /***************************************************************************
+ *   Converts positions and velocities between Cartesian, equatorial and   *
+ *   galactic coordinate systems.                                          *
+ ***************************************************************************/
+/***************************************************************************
  *   Compile using the command: cc -o coco coco.c -lm                      *
  ***************************************************************************/
+
 #include<stdio.h>
 #include<stdlib.h>
 #include<math.h>
 #include<time.h>
-
-#define Pi 3.14159265
-#define PI 3.14159265
-#define G  0.0043009211           //gravitational constant in [km^2/s^2/Msun*pc]
-#define max( a, b ) ( ((a) > (b)) ? (a) : (b) )
-#define min( a, b ) ( ((a) < (b)) ? (a) : (b) )
+#include"coco.h"
 
 
-void convert(double *x, double *v, double *dsun, double *vrsun, double *vr, double *l, double *b, double *lcosb, double *RA, double *DEC, double *mu_alpha, double *mu_alphacosdelta, double *mu_delta, double *mutemp, double *PAtemp, double *mu_ltemp, double *mu_btemp, double *mu_lcosbtemp, int coordtype, int vcoordtype, double vLSRtemp);
+int main (int argc, const char * argv[])
+{
 
-
-//Galactic North Pole parameters
-//double alphaGNP = 192.25; //Galactic north pole in B1950 coordinates
-//double deltaGNP = 27.4;
-//double PAGNP = 123;       //Position angle with respect to equatorial pole
-double const alphaGNP = 192.859508; //Galactic north pole in J2000 coordinates
-double const deltaGNP = 27.128336;
-double const PAGNP = 122.932;       //Position angle with respect to equatorial pole
-
-//solar parameters
-double const rgalsun = 8330.0; //solar Galactocentric radius [pc] (standard = 8330.0; Gillessen et al. 2009)
-double const vLSR = 239.5;    //rotational velocity of local standard of rest
-//double vxsun = 0.0;
-//double vysun = 0.0; 
-//double vzsun = 0.0;
-//double vxsun = 8.83; //±0.24 - solar motion with respect to the LSR from Coskunoglu et al. (2011) [km/s] 
-//double vysun = 14.19; //±0.34 - 20453 RAVE stars
-//double const vzsun = 6.57; //±0.21
-double const vxsun = 11.1;//+0.69/−0.75 - solar motion with respect to the LSR from Schoenrich, Binney & Dehnen (2010) [km/s]
-double const vysun = 12.24;//+0.47−0.47 
-double const vzsun = 7.25;//+0.37−0.36
-//double vxsun = 10.0;    //solar motion with respect to the LSR from Dehnen & Binney (1998) [km/s]
-//double vysun = 5.3;
-//double vzsun = 7.2;
-//double vxsun = 10.4;    //solar motion with respect to the LSR from Johnson & Soderblom (1987) [km/s]
-//double vysun = 14.8;
-//double vzsun = 7.3;
-//double vxsun = 11.0;    //solar motion with respect to the LSR from Ratnatunga, Bahcall & Casertano (1989) [km/s]
-//double vysun = 14.0;
-//double vzsun = 7.5;
-
-
-int radio = 0; //say what you're doing (0 = no, 1 = yes)
-
-
-
-int main (int argc, const char * argv[]) {
-
-	double x[3] = {0.0, 0.0, 0.0};  //galactocentric cartesian coordinates [pc]
-	double v[3] = {0.0, 0.0, 0.0};	//galactocentric cartesian rest-frame velocity [km/s]
+    double x[3] = {0.0, 0.0, 0.0};	// galactocentric cartesian coordinates [pc]
+    double v[3] = {0.0, 0.0, 0.0};	// galactocentric cartesian rest-frame velocity [km/s]
 	double dsun = 6000.0;//8330.0;//102800.0;//23500.0;//23426.700;//30000;	//distance from the sun [pc]
 	double vrsun = 232.0;//72.3;//-58.7;  //heliocentric radial velocity [km/s]
 	double vr = 0.0; //radial velocity in LSR frame corrected for solar motion [km/s]
@@ -112,8 +75,8 @@ int main (int argc, const char * argv[]) {
     printf("RA = %f\t DEC = %f [deg]\n", RA,DEC);
     printf("mu_alpha = %f\t mu_alphacos(delta) = %f\t mu_delta = %f\t mu = %f [mas/yr]\t PA = %f [deg]\tmu_l = %f\t mu_lcos(b) = %f\t mu_b = %f\n", mu_alpha,mu_alphacosdelta,mu_delta,mu,PA, mu_l,mu_lcosb,mu_b);
 	
-	
     return 0;
+
 }
 
 
